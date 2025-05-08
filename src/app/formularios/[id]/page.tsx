@@ -179,7 +179,7 @@ const EditFormPage = () => {
                     onChange={(value) => handleServiceChange(option.id, value)}
                     options={servicos.map(servico => ({
                       value: servico.documentId,
-                      label: `${servico.name} - ${convertToBRL(servico.preco)}`,
+                      label: `${servico.name} - ${convertToBRL(servico.preco ?? 0)}`,
                     }))}
                   />
                 </Form.Item>
@@ -196,7 +196,7 @@ const EditFormPage = () => {
                   onChange={(value) => handleSubOptionChange(option.id, value)}
                   options={servicos.map(servico => ({
                     value: servico.documentId,
-                    label: `${servico.name} - ${convertToBRL(servico.preco)}`,
+                    label: `${servico.name} - ${convertToBRL(servico.preco ?? 0)}`,
                   }))}
                 />
               </Form.Item>

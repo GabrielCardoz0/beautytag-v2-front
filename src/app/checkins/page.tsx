@@ -32,7 +32,9 @@ export default function Checkins() {
 
   const fetchCheckins = async () => {
     try {
-      const checkins = await getCheckins({});
+      const checkins = await getCheckins({
+        sort: { createdAt: "desc" }
+      });
       setData(checkins.data.data);
     } catch (error) {
       console.error(error);

@@ -101,7 +101,7 @@ export default function Colaboradores() {
   };
 
   const handleViewServices = (record: Colaborador) => {
-    const list = record.plano.plano_servicos;
+    const list = record?.plano?.plano_servicos ?? [];
     setModalData(list);
     setIsServicesModalVisible(true);
   };
@@ -121,7 +121,7 @@ export default function Colaboradores() {
       
       await deleteUser(selectedColab.id);
       await deletePlano(selectedColab.plano.documentId);
-      await Promise.all(selectedColab.plano.plano_servicos.map(async (servico: PlanoServico) => await deletePlanoServico(servico.documentId)));
+      await Promise.all(selectedColab?.plano?.plano_servicos?.map(async (servico: PlanoServico) => await deletePlanoServico(servico.documentId)));
 
       setIsModalVisible(false);
       toast.success("Colaborador excluído com sucesso!");
@@ -205,8 +205,8 @@ export default function Colaboradores() {
       key: "total_plano", 
       dataIndex: "plano",
       render: ((plano) => {
-        const total = plano.plano_servicos.reduce((total: number, servico: any) => total + (servico.servico.preco * servico.frequencia_value), 0);
-        return convertToBRL(total);
+        const planTotal = plano.plano_servicos.reduce((sum: number, service: PlanoServico) => sum + ( service.frequencia_value * service.servico.preco_colab ), 0);
+        return convertToBRL(planTotal ?? 0);
       })
     },
     {
@@ -280,7 +280,7 @@ export default function Colaboradores() {
       >
         <List
           dataSource={modalData}
-          renderItem={(item: PlanoServico) => <List.Item>{item.servico.name} - {convertToBRL(item.frequencia_value * item.servico.preco_colab)} ({item.frequencia} x {convertToBRL(item.servico.preco_colab)})</List.Item>}
+          renderItem={(item: PlanoServico) => <List.Item>{item.servico.name} - {convertToBRL(item.frequencia_value * item.servico.preco_colab)} ({item.frequencia} x {convertToBRL(item.servico.preco_colab ?? 0)})</List.Item>}
         />
       </Modal>
 

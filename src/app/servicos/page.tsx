@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Table as AntTable, Input, Button, Dropdown, Modal, Form } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { MoreOutlined } from "@ant-design/icons";
-import { createServico, getServicos, getUsers, deleteServico, updateServico } from "@/services"; 
+import { createServico, getServicos, getUsers, updateServico } from "@/services"; 
 import { toast } from "react-toastify";
-import { convertToBRL } from "@/utils";
+import { convertToBRL, deletarServico } from "@/utils";
 import ServiceModal from "./ServiceModal";
 
 interface Servico {
@@ -204,7 +204,8 @@ export default function Services() {
     if (!selectedService) return;
 
     try {
-      await deleteServico(selectedService.documentId);
+      await deletarServico(selectedService.documentId);
+
       toast.success("Serviço excluído com sucesso");
       setIsDeleteModalOpen(false);
       fetchServicos(currentPage);
@@ -245,6 +246,7 @@ export default function Services() {
     { title: "Preço (R$)", key: "preco", dataIndex: "preco", render: (price) => convertToBRL(price ?? 0) },
     { title: "Repasse (R$)", key: "preco_colab", dataIndex: "preco_colab", render: (value) => convertToBRL(value ?? 0) },
     { title: "Parceiro (R$)", key: "preco_parceiro", dataIndex: "preco_parceiro", render: (value) => convertToBRL(value ?? 0) },
+    { title: "Lucro (R$)", key: "lucro", dataIndex: "lucro", render: (value) => convertToBRL(value ?? 0) },
     { title: "Gênero", key: "genero", dataIndex: "genero" },
     { title: "Usuários Relacionados", key: "users", dataIndex: "plano_servicos_length" },
     { title: "Parceiro", key: "company", dataIndex: "company" },

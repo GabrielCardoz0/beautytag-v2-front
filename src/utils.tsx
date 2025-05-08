@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { deleteFormularioOpcao, deletePlanoServico, deleteServico, getFormularioOpcaos, getPlanoServicos } from './services';
 
 export default function withAuth(Component: any, allowedRoles: string[]) {
   return function ProtectedPage(props: any) {
@@ -58,3 +59,37 @@ export const calculate = (price: number, transferPercent: number, collaboratorPe
     profit,
   }
 };
+
+export const deletarServico = async (id: string) => {
+  try {
+    const optionsReponse = await getFormularioOpcaos({
+      populate: "*",
+      filters: {
+        servico: {
+          documentId: {
+            $eq: id.toString(),
+          },
+        },
+      },
+    });
+  
+    const planosReponse = await getPlanoServicos({
+      populate: "*",
+      filters: {
+        servico: {
+          documentId: {
+            $eq: id.toString(),
+          },
+        },
+      },
+    });
+    
+    await Promise.all(optionsReponse.data.data.map(async (item: any) => await deleteFormularioOpcao(item.documentId)));
+    await Promise.all(planosReponse.data.data.map(async (item: any) => await deletePlanoServico(item.documentId)));
+  
+    await deleteServico(id);
+    
+  } catch (error) {
+    console.log(error);
+  }
+}

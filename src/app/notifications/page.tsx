@@ -280,7 +280,7 @@ const UserNotification = ({ notification }: { notification: UserNotification }) 
             title: "Preço",
             dataIndex: "price", // Corrigido para o campo correto
             key: "price",
-            render: (price) => (price ? convertToBRL(price) : "N/A"), // Evitar erro de undefined
+            render: (price) => (price ? convertToBRL(price ?? 0) : "N/A"), // Evitar erro de undefined
           },
           {
             title: "Frequência",
@@ -303,7 +303,7 @@ const ServiceNotification = ({ notification }: { notification: ServiceNotificati
         <Descriptions.Item label="Nome">{notification.name || "N/A"}</Descriptions.Item>
         <Descriptions.Item label="Descrição">{notification.descricao || "N/A"}</Descriptions.Item>
         <Descriptions.Item label="Preço">
-          {notification?.preco ? convertToBRL(notification.preco) : "N/A"}
+          {notification?.preco ? convertToBRL(notification.preco ?? 0) : "N/A"}
         </Descriptions.Item>
         <Descriptions.Item label="Gênero">{notification?.genero || "N/A"}</Descriptions.Item>
         <Descriptions.Item label="Empresa">{notification?.empresa || "N/A"}</Descriptions.Item>
@@ -362,7 +362,7 @@ const CompleteServiceModal = ({ isServiceModalVisible, setIsServiceModalVisible,
         <Form.Item label="Descrição" name="descricao" initialValue={notification?.descricao}>
           <Input disabled />
         </Form.Item>
-        <Form.Item label="Preço" name="preco" initialValue={notification?.preco ? convertToBRL(notification?.preco) : notification?.preco}>
+        <Form.Item label="Preço" name="preco" initialValue={notification?.preco ? convertToBRL(notification?.preco ?? 0) : notification?.preco}>
           <InputNumber disabled style={{ width: "100%" }} />
         </Form.Item>
         <Form.Item label="Gênero" name="genero" initialValue={notification?.genero}>

@@ -75,6 +75,11 @@ export default function Page() {
   useEffect(() => { fetchForm() }, []);
 
   const handleNextStep = (values?: any) => {
+
+    if(formData.formulario_opcaos.length === 0){
+      toast.warning("Este formulário está desabilitado.");
+      return;
+    }
     if (step === 2 && !acceptedTerms) {
       alert("Você precisa aceitar os termos para continuar.");
       return;
@@ -172,7 +177,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col items-center min-h-screen p-4 text-center w-screen">
-      <span onClick={() => setStep(4)}>AQUI</span>
+      {/* <span onClick={() => setStep(4)}>AQUI</span> */}
       {
         step === 1 && 
         <Step1

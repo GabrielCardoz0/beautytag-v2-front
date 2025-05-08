@@ -146,7 +146,7 @@ const ServiceModal: React.FC<ServiceModalProps> = ({
           <Select placeholder="Selecione a empresa">
             {empresas?.map((company) => (
               <Select.Option key={company.id} value={company.id}>
-                {company.name}
+                {company.name} - {company.id}
               </Select.Option>
             ))}
           </Select>

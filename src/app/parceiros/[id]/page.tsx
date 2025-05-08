@@ -1,11 +1,12 @@
 "use client";
 
 import React from 'react'; // Adicionado para resolver o erro "React is not defined"
-import { deleteServico, getServicos, getUserById, updateUser } from '@/services';
+import { getServicos, getUserById, updateUser } from '@/services';
 import { Form, Input, Button, Row, Col, List, Modal } from 'antd'; // Importação do Modal adicionada
 import { useParams, useRouter } from 'next/navigation'; // Importação do hook useParams
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { deletarServico } from '@/utils';
 
 interface Parceiro {
   id: number;
@@ -289,9 +290,13 @@ function ServicosList({ servicosList, fetchServicos }: { servicosList: Servico[]
 
   const handleDeleteConfirm = async () => {
     try {
-      await deleteServico(selectedServiceId);
+
+      await deletarServico(selectedServiceId.toString());
+
       await fetchServicos();
+
       setIsModalVisible(false);
+
       setSelectedServiceId(null);
     } catch (error) {
       console.error(error);

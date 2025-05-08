@@ -4,9 +4,10 @@ import { Table as AntTable, Input, Button, Dropdown, Modal } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { MoreOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
-import { deleteServico, deleteUser, getUsers } from "@/services";
+import { deleteUser, getUsers } from "@/services";
 import { MenuProps } from "antd";
 import { useRouter } from "next/navigation";
+import { deletarServico } from "@/utils";
 
 export default function Parceiros() {
   const [searchText, setSearchText] = useState("");
@@ -45,8 +46,11 @@ export default function Parceiros() {
 
   const handleConfirmDelete = async () => {
     try {
-      await Promise.all(selectedParceiro.servicos.map(async (servico: any) => await deleteServico(servico.documentId)));
-      
+
+      for(const service of selectedParceiro.servicos){
+        await deletarServico(service.documentId);
+      }
+    
       await deleteUser(selectedParceiro.id);
 
       setIsModalVisible(false);

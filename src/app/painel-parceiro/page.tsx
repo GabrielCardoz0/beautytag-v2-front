@@ -179,7 +179,7 @@ export default function ColaboradorDetalhes() {
                   <Button key="remove" onClick={() => openRemoveModal(index)}>Remover</Button>,
                 ]}
               >
-                {item.name} - {convertToBRL(item.preco)}
+                {item.name} - {convertToBRL(item.preco ?? 0)}
               </List.Item>
             )}
           />
