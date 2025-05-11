@@ -85,7 +85,7 @@ export default function ColaboradorDetalhes() {
       });
       setParceiro(response.data[0]);
       setLoading(false);
-      setServices(response.data[0].servicos);
+      setServices(response.data[0].servicos.filter(item => item.publishedAt));
     } catch (error) {
       console.error(error);
       toast.error("Não foi possível carregar suas informações. Tente novamente mais tarde");
@@ -144,6 +144,9 @@ export default function ColaboradorDetalhes() {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+
+
+  console.log(services);
 
   return (
     <>

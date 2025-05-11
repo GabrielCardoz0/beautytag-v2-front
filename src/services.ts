@@ -169,7 +169,8 @@ export const getUserById = (id: number | string) => {
 };
 
 export const createUser = (data: CreateUserRequest) => {
-  return axios.post(`${API_BASE_URL}/users`, data, { headers: getAuthHeaders() });
+  const publishedData = { ...data, publishedAt: new Date().toISOString() }
+  return axios.post(`${API_BASE_URL}/users`, publishedData, { headers: getAuthHeaders() });
 };
 
 export const updateUser = (id: number, data: Partial<CreateUserRequest>) => {
@@ -186,7 +187,9 @@ export const getCheckins = (params: Record<string, any>) => {
 };
 
 export const createCheckin = (data: CheckinRequest) => {
-  return axios.post(`${API_BASE_URL}/checkins`, data, { headers: getAuthHeaders() });
+  const publishedData = { ...data, publishedAt: new Date().toISOString() }
+
+  return axios.post(`${API_BASE_URL}/checkins`, publishedData, { headers: getAuthHeaders() });
 };
 
 export const getCheckinById = (id: number) => {
@@ -207,7 +210,8 @@ export const getFormularios = (params: Record<string, any>) => {
 };
 
 export const createFormulario = (data: FormularioRequest) => {
-  return axios.post(`${API_BASE_URL}/formularios`, data, { headers: getAuthHeaders() });
+  const publishedData = { ...data, publishedAt: new Date().toISOString() }
+  return axios.post(`${API_BASE_URL}/formularios`, publishedData, { headers: getAuthHeaders() });
 };
 
 export const getFormularioById = (id: number | string) => {
@@ -228,7 +232,9 @@ export const getPlanos = (params: Record<string, any>) => {
 };
 
 export const createPlano = (data: PlanoRequest) => {
-  return axios.post(`${API_BASE_URL}/planos`, data, { headers: getAuthHeaders() });
+  const publishedData = { ...data, publishedAt: new Date().toISOString() }
+
+  return axios.post(`${API_BASE_URL}/planos`, publishedData, { headers: getAuthHeaders() });
 };
 
 export const getPlanoById = (id: number) => {
@@ -249,7 +255,9 @@ export const getPlanoServicos = (params: Record<string, any>) => {
 };
 
 export const createPlanoServico = (data: PlanoServicoRequest) => {
-  return axios.post(`${API_BASE_URL}/plano-servicos`, data, { headers: getAuthHeaders() });
+  const publishedData = { ...data, publishedAt: new Date().toISOString() }
+
+  return axios.post(`${API_BASE_URL}/plano-servicos`, publishedData, { headers: getAuthHeaders() });
 };
 
 export const getPlanoServicoById = (id: number | string) => {
@@ -270,7 +278,9 @@ export const getServicos = (params: Record<string, any>) => {
 };
 
 export const createServico = (data: ServicoRequest) => {
-  return axios.post(`${API_BASE_URL}/servicos`, data, { headers: getAuthHeaders() });
+  const publishedData = { ...data, publishedAt: new Date().toISOString() }
+
+  return axios.post(`${API_BASE_URL}/servicos`, publishedData, { headers: getAuthHeaders() });
 };
 
 export const getServicoById = (id: number) => {
@@ -291,7 +301,9 @@ export const getFormularioOpcaos = (params: Record<string, any>) => {
 };
 
 export const createFormularioOpcao = (data: FormularioOpcaoRequest) => {
-  return axios.post(`${API_BASE_URL}/formulario-opcaos`, data, { headers: getAuthHeaders() });
+  const publishedData = { ...data, publishedAt: new Date().toISOString() }
+
+  return axios.post(`${API_BASE_URL}/formulario-opcaos`, publishedData, { headers: getAuthHeaders() });
 };
 
 export const getFormularioOpcaoById = (id: number | string) => {
@@ -312,7 +324,9 @@ export const getNotifications = (params: Record<string, any>) => {
 };
 
 export const createNotification = (data: NotificationRequest) => {
-  return axios.post(`${API_BASE_URL}/notifications`, data, { headers: getAuthHeaders() });
+  const publishedData = { ...data, publishedAt: new Date().toISOString() }
+
+  return axios.post(`${API_BASE_URL}/notifications`, publishedData, { headers: getAuthHeaders() });
 };
 
 export const getNotificationById = (id: number | string) => {
