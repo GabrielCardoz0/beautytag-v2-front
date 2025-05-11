@@ -170,10 +170,10 @@ export default function ColaboradorDetalhes() {
     }
   };
 
-  const openRemoveModal = (item: PlanoServico) => {
-    setServiceToRemove(item);
-    setRemoveModalVisible(true);
-  };
+  // const openRemoveModal = (item: PlanoServico) => {
+  //   setServiceToRemove(item);
+  //   setRemoveModalVisible(true);
+  // };
 
   const confirmRemoveService = async () => {
     try {
@@ -221,7 +221,7 @@ export default function ColaboradorDetalhes() {
               <List.Item
                 key={index}
                 actions={[
-                  <Button key={""} onClick={() => openRemoveModal(item)}>Remover</Button>,
+                  // <Button key={""} onClick={() => openRemoveModal(item)}>Remover</Button>,
                 ]}
               >
                 {item.servico.name} - {convertToBRL(item?.servico?.preco_colab ?? 0)}
