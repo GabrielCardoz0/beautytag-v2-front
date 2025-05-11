@@ -27,7 +27,7 @@ export default function Page() {
         case 'admin':
           router.push('/notifications');
           break;
-        case 'empresa':
+        case 'parceiro':
           router.push('/painel-parceiro');
           break;
         case 'colaborador':

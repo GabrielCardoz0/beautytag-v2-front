@@ -58,7 +58,7 @@ export default function Forms() {
   };
 
   const handleShare = (documentId: string) => {
-    const shareUrl = `http://localhost:3000/public/${documentId}`;
+    const shareUrl = `https://beautytag.com.br/public/${documentId}`;
     copyToClipboard(shareUrl);
     toast.success("Link copiado para a área de transferência!");
   };
