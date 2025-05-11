@@ -210,7 +210,10 @@ export default function NotificationsPage() {
 
   return (
     <div className="p-4 w-full">
-      <h1>Notificações</h1>
+    <div className="border-b-red-500 border-b-2 mb-4">
+      <h1 className="text-lg font-semibold">Notificações</h1>
+    </div>
+
       <Table
         dataSource={notifications}
         columns={columns}

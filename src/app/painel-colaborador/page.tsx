@@ -2,6 +2,7 @@
 
 import { useUser } from "@/context/UserContext";
 import { getUsers } from "@/services";
+import { handleContactClick } from "@/utils";
 import { Card, Descriptions, List, Button, Modal } from "antd";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -199,10 +200,6 @@ export default function Page() {
   }
 
   useEffect(() => { fetchInfos() }, []);
-
-  const handleContactClick = () => {
-    window.open("https://wa.me/5511994703386", "_blank");
-  };
 
   const showModal = () => {
     setIsModalVisible(true);

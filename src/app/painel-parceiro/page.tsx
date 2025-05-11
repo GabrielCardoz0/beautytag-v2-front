@@ -5,7 +5,7 @@ import { Card, Descriptions, List, Modal, Button, Form, Input, InputNumber, Sele
 import { useUser } from "@/context/UserContext";
 import { toast } from "react-toastify";
 import { createNotification, getUsers } from "@/services";
-import { convertToBRL } from "@/utils";
+import { convertToBRL, handleContactClick } from "@/utils";
 import { useForm } from "antd/es/form/Form";
 
 interface Metadata {
@@ -143,10 +143,6 @@ export default function ColaboradorDetalhes() {
 
   const handleCancel = () => {
     setIsModalVisible(false);
-  };
-
-  const handleContactClick = () => {
-    window.open("https://wa.me/5599999999999", "_blank");
   };
 
   return (
