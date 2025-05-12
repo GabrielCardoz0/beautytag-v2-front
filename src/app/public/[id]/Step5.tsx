@@ -15,7 +15,7 @@ export default function Step5() {
         extra={
           <Button
             type="primary"
-            onClick={() => window.location.href = "/public"}
+            onClick={() => window.location.reload()}
             style={{ height: "36px", fontWeight: "bold", fontSize: "16px" }}
           >
             Voltar para a página inicial

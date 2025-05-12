@@ -95,6 +95,6 @@ export const deletarServico = async (id: string) => {
 }
 
 
-export const handleContactClick = () => {
-  window.open("https://wa.me/5524993249483", "_blank");
+export const handleContactClick = (str = "https://wa.me/5524993249483") => {
+  window.open(str, "_blank");
 };

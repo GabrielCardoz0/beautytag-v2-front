@@ -269,7 +269,7 @@ export default function Page() {
             <Button key="cancel" onClick={handleCancel}>
               Cancelar
             </Button>,
-            <Button key="contact" type="primary" onClick={handleContactClick}>
+            <Button key="contact" type="primary" onClick={() => handleContactClick("https://wa.me/5524974024137")}>
               Abrir WhatsApp
             </Button>,
           ]}

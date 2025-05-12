@@ -203,7 +203,7 @@ export default function ColaboradorDetalhes() {
             <Button key="cancel" onClick={handleCancel}>
               Cancelar
             </Button>,
-            <Button key="contact" type="primary" onClick={handleContactClick}>
+            <Button key="contact" type="primary" onClick={() => handleContactClick("https://wa.me/qr/JMXJMWC7DAFRG1")}>
               Abrir WhatsApp
             </Button>,
           ]}
