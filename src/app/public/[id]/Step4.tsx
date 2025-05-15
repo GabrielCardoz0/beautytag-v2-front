@@ -23,6 +23,14 @@ export default function Step4({ handlePrevStep, handleNextStep, options }: Step4
     });
   };
 
+  const handleRemoveService = (id: string) => {
+    setServices(prev => {
+      const updated = { ...prev };
+      delete updated[id];
+      return updated;
+    });
+  };
+
   const planTotal = Object.values(services).reduce((sum, { total }) => sum + total, 0);
 
   const handleSubmit = () => {
@@ -48,7 +56,7 @@ export default function Step4({ handlePrevStep, handleNextStep, options }: Step4
       <Form layout="vertical" onFinish={handleSubmit} className="w-full max-w-md">
         {options?.length ? (
           options.map(option => (
-            <ServiceItem key={option.id} option={option} onChange={handleServiceChange} />
+            <ServiceItem key={option.id} option={option} onChange={handleServiceChange} onRemove={handleRemoveService} />
           ))
         ) : (
           <Text>Nenhuma opção disponível.</Text>
@@ -77,9 +85,10 @@ export default function Step4({ handlePrevStep, handleNextStep, options }: Step4
 interface ServiceItemProps {
   option: FormularioOpcao;
   onChange: (oldId: string, newId: string, price: number, frequency: number) => void;
+  onRemove: (id: string) => void;
 }
 
-function ServiceItem({ option, onChange }: ServiceItemProps) {
+function ServiceItem({ option, onChange, onRemove }: ServiceItemProps) {
   const { servico, servicos_secundarios } = option;
   const [selected, setSelected] = useState(servico);
   const [modalVisible, setModalVisible] = useState(false);
@@ -98,6 +107,12 @@ function ServiceItem({ option, onChange }: ServiceItemProps) {
       setModalVisible(false);
     }
   };
+
+  const handleRemove = (id: string) => {
+    setFrequency(null);
+    setSelected(servico);
+    onRemove(id);
+  }
 
   return (
     <div className="mb-6 border p-4 rounded">
@@ -135,6 +150,11 @@ function ServiceItem({ option, onChange }: ServiceItemProps) {
         <Text className="block mt-2 font-semibold">
           Total: {convertToBRL(selected.preco_colab * frequency)}
         </Text>
+      )}
+      {frequency !== null && selected && (
+        <Button type="link" danger onClick={() => handleRemove(selected.documentId)}>
+          Remover serviço
+        </Button>
       )}
 
       <Modal

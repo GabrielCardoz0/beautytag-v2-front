@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { calculate, CalculateProfit, convertToBRL } from "@/utils";
 import { createPlano, createPlanoServico, createServico, createUser, deleteNotification, getNotifications } from "@/services";
 import moment from "moment";
+import { LoadingOutlined } from "@ant-design/icons";
 
 interface Notification {
   documentId: string,
@@ -58,16 +59,23 @@ export default function NotificationsPage() {
   const [notification, setNotification] = useState<Notification | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [serviceForm] = Form.useForm();
+  const [loading, setLoading] = useState(false);
 
   const fectchNotifications = async () => {
     try {
+      setLoading(true);
+
       const res = await getNotifications({
         sort: { createdAt: "desc" }
       });
       setNotifications(res.data.data);
+      setLoading(false);
+
     } catch (error) {
       console.error(error);
       toast.error("Ocorreu um erro ao buscar notificações. Tente novamente mais tarde");
+      setLoading(false);
+
     }
   };
 
@@ -91,7 +99,7 @@ export default function NotificationsPage() {
   const handleCreateUser = async (metadata: UserNotification) => {
     const { user, services } = metadata;
     try {
-      
+      setLoading(true);
       const createdUser = await createUser({
         email: user.email,
         name: user.name,
@@ -123,9 +131,11 @@ export default function NotificationsPage() {
           planos: createdPlan.data.data.documentId,
         }
       })));
+      setLoading(false);
     } catch (error) {
       console.error(error);
       toast.error("Ocorreu um erro ao executar. Tente novamente mais tarde");
+      setLoading(false);
     }
   }
 
@@ -159,8 +169,8 @@ export default function NotificationsPage() {
     try {
       if (data.metadata.type === "user") {
         await handleCreateUser(data.metadata as UserNotification);
-        await deleteAndRefechNotification(notification.documentId);
-        toast.success("Usuário criado com sucesso!");
+        await deleteAndRefechNotification(data.documentId);
+        toast.success("Colaborador criado com sucesso!");
       }
 
       if (data.metadata.type === "service") {
@@ -213,43 +223,47 @@ export default function NotificationsPage() {
     <div className="border-b-red-500 border-b-2 mb-4">
       <h1 className="text-lg font-semibold">Notificações</h1>
     </div>
+    {
+      loading ? <LoadingOutlined /> :
+      <>
+        <Table
+          dataSource={notifications}
+          columns={columns}
+          rowKey={(record) => record.id}
+          pagination={false}
+          style={{
+            width: "100%"
+          }}
+        />
 
-      <Table
-        dataSource={notifications}
-        columns={columns}
-        rowKey={(record) => record.id}
-        pagination={false}
-        style={{
-          width: "100%"
-        }}
-      />
+        <Modal
+          title="Detalhes do Usuário"
+          open={isModalVisible}
+          onCancel={handleCloseModal}
+          footer={[
+            <Button key="close" onClick={handleCloseModal}>
+              Fechar
+            </Button>,
+          ]}
+        >
+          {notification && notification.metadata ? ( // Adicionada verificação para evitar erro de null
+            notification.metadata.type === "user"
+              ? <UserNotification notification={notification.metadata as UserNotification} />
+              : <ServiceNotification notification={notification.metadata as ServiceNotification} />
+          ) : (
+            <p>Detalhes não disponíveis.</p>
+          )}
+        </Modal>
 
-      <Modal
-        title="Detalhes do Usuário"
-        open={isModalVisible}
-        onCancel={handleCloseModal}
-        footer={[
-          <Button key="close" onClick={handleCloseModal}>
-            Fechar
-          </Button>,
-        ]}
-      >
-        {notification && notification.metadata ? ( // Adicionada verificação para evitar erro de null
-          notification.metadata.type === "user"
-            ? <UserNotification notification={notification.metadata as UserNotification} />
-            : <ServiceNotification notification={notification.metadata as ServiceNotification} />
-        ) : (
-          <p>Detalhes não disponíveis.</p>
-        )}
-      </Modal>
-
-      <CompleteServiceModal
-        isServiceModalVisible={isServiceModalVisible}
-        setIsServiceModalVisible={setIsServiceModalVisible}
-        handleCreateService={handleCreateService}
-        notification={notification?.metadata as ServiceNotification}
-        serviceForm={serviceForm}
-      />
+        <CompleteServiceModal
+          isServiceModalVisible={isServiceModalVisible}
+          setIsServiceModalVisible={setIsServiceModalVisible}
+          handleCreateService={handleCreateService}
+          notification={notification?.metadata as ServiceNotification}
+          serviceForm={serviceForm}
+        />
+      </>
+    }
     </div>
   );
 }

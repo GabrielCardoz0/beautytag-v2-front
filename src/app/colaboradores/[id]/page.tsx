@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { createPlanoServico, deletePlanoServico, getPlanos, getServicos, getUserById } from "@/services";
 import moment from "moment";
+import { LoadingOutlined } from "@ant-design/icons";
 
 
 interface Colaborador {
@@ -96,12 +97,16 @@ export default function ColaboradorDetalhes() {
   const [colaborador, setColaborador] = useState<Colaborador | null>(null);
   const [services, setServices] = useState<Servico[]>([]);
   const [selectedFrequency, setSelectedFrequency] = useState<number>(1);
+  const [selectedService, setSelectedService] = useState<string | null>(null);
+
   const { id } = useParams();
+  const [loading, setLoading] = useState(false);
+
 
   const totalPlan = useMemo(() => {
-    if (!plano || !plano.plano_servicos) return 0;
+    if (!plano || !plano?.plano_servicos) return 0;
 
-    return plano.plano_servicos.reduce((total, planoServico) => {
+    return plano?.plano_servicos.reduce((total, planoServico) => {
       return total + (planoServico.servico.preco_colab * planoServico.frequencia_value);
     }, 0);
   }, [plano]);
@@ -113,26 +118,33 @@ export default function ColaboradorDetalhes() {
 
   const fetchColab = async () => {
     try {
+      setLoading(true);
       const res = await getUserById(id.toString());
       setColaborador(res.data)
     } catch (error) {
       console.error(error);
       toast.error("Não foi possível buscar as informações do colaborador. Tente novamente mais tarde.");
+    } finally {
+      setLoading(false);
     }
   }
 
   const fetchServicos = async () => {
     try {
+      setLoading(true);
       const res = await getServicos({});
       setServices(res.data.data);
     } catch (error) {
       console.error(error);
       toast.error("Não foi possível buscar as informações do colaborador. Tente novamente mais tarde.");
+    } finally {
+      setLoading(false);
     }
   }
 
   const fetchPlano = async () => {
     try {
+      setLoading(true);
       const res = await getPlanos({
         "filters[users_permissions_user][id][$eq]": id,
         populate: "plano_servicos.servico"
@@ -141,6 +153,8 @@ export default function ColaboradorDetalhes() {
     } catch (error) {
       console.error(error);
       toast.error('Houve um erro ao buscar a lista de serviços do parceiro!');
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -151,7 +165,12 @@ export default function ColaboradorDetalhes() {
   }, [id]);
 
   const handleAddService = async (service: Servico) => {
+
+    if(!service) return toast.error("Selecione um serviço para continuar.");
+
     try {
+      setLoading(true);
+
       await createPlanoServico({
         data: {
           servico: service.documentId,
@@ -163,20 +182,25 @@ export default function ColaboradorDetalhes() {
       fetchPlano();
       setIsModalOpen(false);
       setSelectedFrequency(1);
+      setSelectedService(null);
       toast.success("Serviço adicionado com sucesso!");
     } catch (error) {
       console.error(error);
       toast.error("Ocorreu um erro ao adicionar o serviço. Tente novamente mais tarde.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // const openRemoveModal = (item: PlanoServico) => {
-  //   setServiceToRemove(item);
-  //   setRemoveModalVisible(true);
-  // };
+  const openRemoveModal = (item: PlanoServico) => {
+    setServiceToRemove(item);
+    setRemoveModalVisible(true);
+  };
 
   const confirmRemoveService = async () => {
     try {
+      setLoading(false);
+
       await deletePlanoServico(serviceToRemove.documentId);
       fetchPlano();
       setRemoveModalVisible(false);
@@ -184,6 +208,8 @@ export default function ColaboradorDetalhes() {
     } catch (error) {
       console.error(error);
       toast.error("Erro ao remover serviço. Tente novamente mais tarde.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -195,7 +221,8 @@ export default function ColaboradorDetalhes() {
   return (
     <>
     {
-      !colaborador ? "Carregando" : 
+      loading ? <div><LoadingOutlined /></div> :
+      !colaborador ? "Não foi possível carregar" :
       <div className="w-full p-4 flex gap-8">
         <Card title={`Detalhes do Colaborador - ${colaborador.name}`} style={{ width: "100%" }}>
           <Descriptions bordered column={1}>
@@ -216,12 +243,12 @@ export default function ColaboradorDetalhes() {
 
         <Card title="Serviços" className="mt-4" style={{ width: "100%" }}>
           <List
-            dataSource={plano.plano_servicos}
+            dataSource={plano?.plano_servicos}
             renderItem={(item, index) => (
               <List.Item
                 key={index}
                 actions={[
-                  // <Button key={""} onClick={() => openRemoveModal(item)}>Remover</Button>,
+                  <Button key={""} onClick={() => openRemoveModal(item)}>Remover</Button>,
                 ]}
               >
                 {item.servico.name} - {convertToBRL(item?.servico?.preco_colab ?? 0)}
@@ -252,20 +279,24 @@ export default function ColaboradorDetalhes() {
               <Select.Option value={4}>4x por mês</Select.Option>
             </Select>
           </div>
-          <List
-            dataSource={availableServices}
-            renderItem={(item) => (
-              <List.Item
-                actions={[
-                  <Button key={"button2"} type="primary" onClick={() => handleAddService(item)}>
-                    Adicionar
-                  </Button>,
-                ]}
-              >
-                {item.name} - {convertToBRL(item?.preco_colab ?? 0)}
-              </List.Item>
-            )}
-          />
+          <div className="mb-4">
+            <label>Selecione o serviço:</label>
+            <Select
+              style={{ width: "100%" }}
+              value={selectedService}
+              onChange={(value) => setSelectedService(value)}
+            >
+              {
+                availableServices?.map(service => (
+                <Select.Option key={service.id} value={service.documentId}>{service.name} - {convertToBRL(service?.preco_colab ?? 0)}</Select.Option>
+              ))
+              }
+            </Select>
+          </div>
+
+          <div>
+            <Button disabled={!selectedService} onClick={() => handleAddService(availableServices.find(i => i.documentId === selectedService))}>Adicionar</Button>
+          </div>
         </Modal>
 
         <Modal

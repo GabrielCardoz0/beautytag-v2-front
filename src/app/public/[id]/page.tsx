@@ -9,6 +9,7 @@ import Step5 from "./Step5";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
 import { createNotification, getPublicFormularioByIdentify } from "@/services";
+import { LoadingOutlined } from "@ant-design/icons";
 
 export interface Servico {
   id: number;
@@ -56,11 +57,14 @@ export default function Page() {
   const [formData, setFormData] = useState<Formulario | null>(null);
 
   const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
 
   const { id } = useParams();
 
   const fetchForm = async () => {
     try {
+      setLoading(true);
       const response = await getPublicFormularioByIdentify(id.toString(), {
         populate: ["formulario_opcaos.servico", "formulario_opcaos.servicos_secundarios"]
       });
@@ -69,10 +73,12 @@ export default function Page() {
     } catch (error) {
       console.error(error);
       toast.error("Erro ao acessar formulário. Por favor tente novamente mais tarde.");
+    } finally {
+      setLoading(false);
     }
   }
 
-  useEffect(() => { fetchForm() }, []);
+  useEffect(() => { fetchForm() }, [id]);
 
   const handleNextStep = (values?: any) => {
 
@@ -125,47 +131,10 @@ export default function Page() {
                 empresa: userData.empresa,
               }
             },
-            // services: values.map((option: FormValues) => ({ 
-            //   frequencia_value: option.frequency,
-            //   frequencia: option.frequency_name,
-            //   servico: option.id
-            // }))
             services: values
           }
         }
       });
-
-      // const createdUser = await createUser({
-      //   email: userData.email,
-      //   name: userData.nome,
-      //   password: userData.cpf,
-      //   username: userData.email,
-      //   telefone: userData.whatsapp,
-      //   cpf_cnpj: userData.cpf,
-      //   role: 5,
-      //   metadata: {
-      //     genero: userData.publico,
-      //     data_nascimento: userData.dataNascimento,
-      //     cep: userData.cep,
-      //     empresa: userData.empresa,
-      //   }
-      // });
-
-      // const createdPlan = await createPlano({
-      //   data: {
-      //     is_pago: false,
-      //     users_permissions_user: createdUser.data.id,
-      //   }
-      // });
-
-      // await Promise.all(values.map(async (option: FormValues) => await createPlanoServico({
-      //   data: {
-      //     frequencia_value: option.frequency,
-      //     frequencia: option.frequency_name,
-      //     servico: option.id,
-      //     planos: createdPlan.data.data.documentId,
-      //   }
-      // })));
 
       handleNextStep();
 
@@ -177,47 +146,52 @@ export default function Page() {
 
   return (
     <div className="flex flex-col items-center min-h-screen p-4 text-center w-screen">
+      {
+        loading ? <LoadingOutlined /> :
+        <>
+          {
+            step === 1 && 
+            <Step1
+              handleNextStep={handleNextStep}
+              setShowModal={setShowModal}
+              showModal={showModal}
+            />
+          }
+
+          {
+            step === 2 &&
+            <Step2
+              acceptedTerms={acceptedTerms}
+              setAcceptedTerms={setAcceptedTerms}
+              handleNextStep={handleNextStep}
+            />
+          }
+
+          {
+            step === 3 &&
+            <Step3
+              handleNextStep={handleNextStep}
+              handlePrevStep={handlePrevStep}
+              userData={userData}
+            />
+          }
+
+          {
+            step === 4 &&
+            <Step4
+              handlePrevStep={handlePrevStep}
+              handleNextStep={handleSendForm}
+              options={formData?.formulario_opcaos}
+            />
+          }
+
+          {
+            step === 5 && 
+            <Step5 />
+          }
+        </>
+      }
       {/* <span onClick={() => setStep(4)}>AQUI</span> */}
-      {
-        step === 1 && 
-        <Step1
-          handleNextStep={handleNextStep}
-          setShowModal={setShowModal}
-          showModal={showModal}
-        />
-      }
-
-      {
-        step === 2 &&
-        <Step2
-          acceptedTerms={acceptedTerms}
-          setAcceptedTerms={setAcceptedTerms}
-          handleNextStep={handleNextStep}
-        />
-      }
-
-      {
-        step === 3 &&
-        <Step3
-          handleNextStep={handleNextStep}
-          handlePrevStep={handlePrevStep}
-          userData={userData}
-        />
-      }
-
-      {
-        step === 4 &&
-        <Step4
-          handlePrevStep={handlePrevStep}
-          handleNextStep={handleSendForm}
-          options={formData?.formulario_opcaos}
-        />
-      }
-
-      {
-        step === 5 && 
-        <Step5 />
-      }
     </div>
   );
 }
