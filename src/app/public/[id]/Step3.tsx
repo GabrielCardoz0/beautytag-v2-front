@@ -1,4 +1,4 @@
-import { getUsers, verifyEmail } from "@/services";
+import { verifyEmail } from "@/services";
 import { Button, Form, Input, Select, DatePicker, Typography } from "antd";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
