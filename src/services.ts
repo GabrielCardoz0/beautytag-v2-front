@@ -326,7 +326,7 @@ export const getNotifications = (params: Record<string, any>) => {
 export const createNotification = (data: NotificationRequest) => {
   const publishedData = { ...data, publishedAt: new Date().toISOString() }
 
-  return axios.post(`${API_BASE_URL}/notifications`, publishedData, { headers: getAuthHeaders() });
+  return axios.post(`${API_BASE_URL}/notifications`, publishedData);
 };
 
 export const getNotificationById = (id: number | string) => {
@@ -343,4 +343,8 @@ export const deleteNotification = (id: number | string) => {
 
 export const getPublicFormularioByIdentify = (id: number | string, params: Record<string, any>) => {
   return axios.get(`${API_BASE_URL}/formularios/${id}`, { params });
+};
+
+export const verifyEmail = (params: Record<string, any>) => {
+  return axios.get(`${API_BASE_URL}/users`, { params });
 };

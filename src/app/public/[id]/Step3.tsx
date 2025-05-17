@@ -1,4 +1,4 @@
-import { getUsers } from "@/services";
+import { getUsers, verifyEmail } from "@/services";
 import { Button, Form, Input, Select, DatePicker, Typography } from "antd";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
@@ -21,7 +21,7 @@ export default function Step3({ handleNextStep, handlePrevStep, userData }: Step
 
   const handleFinish = async (values: any) => {
     try {
-      const verifyUser = await getUsers({
+      const verifyUser = await verifyEmail({
         filters: {
           email: {
             $eq: values.email,
@@ -34,9 +34,7 @@ export default function Step3({ handleNextStep, handlePrevStep, userData }: Step
         return;
       }
 
-    } catch {
-      toast.error("Erro ao buscar usuário");
-    }
+    } catch {}
 
     values.cpf = values.cpf.replace(/\D/g, "");
     values.whatsapp = values.whatsapp.replace(/\D/g, "");
