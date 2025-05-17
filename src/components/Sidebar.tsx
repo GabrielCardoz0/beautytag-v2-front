@@ -100,7 +100,7 @@ export default function Sidebar() {
         </div>
       </div>
       </>
-    ) || (<div>failed</div>)
+    ) || (<div></div>)
   );
 };
 

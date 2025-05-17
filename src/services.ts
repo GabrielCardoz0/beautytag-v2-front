@@ -342,5 +342,5 @@ export const deleteNotification = (id: number | string) => {
 };
 
 export const getPublicFormularioByIdentify = (id: number | string, params: Record<string, any>) => {
-  return axios.get(`${API_BASE_URL}/formularios/${id}`,{ params, headers: getAuthHeaders() });
+  return axios.get(`${API_BASE_URL}/formularios/${id}`, { params });
 };
